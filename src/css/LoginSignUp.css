@@ -1,0 +1,93 @@
+.LogIn,
+.SignUp {
+  width: 350px;
+  height: 420px;
+  border: 2px lightgrey;
+  border-style: solid;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 150px;
+  overflow-wrap: anywhere;
+  background: white;
+  text-align:center;
+}
+
+.Title {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.FullName,
+.Email,
+.Password {
+  padding-left: 14px;
+}
+
+.getFullName,
+.getEmail,
+.getPassword {
+  margin-left: 14px;
+  margin-bottom: 10px;
+  height: 25px;
+  width: 300px;
+  border-radius: 15px;
+  padding-left: 8px;
+}
+
+.isInvalid {
+  margin-left: 14px;
+  margin-bottom: 15px;
+  color: red;
+}
+
+.InvalidInput {
+  margin-left: 14px;
+  margin-bottom: 10px;
+  color: blue;
+}
+
+.InvalidInput:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.isSubmission,
+.isValidate {
+  height: 35px;
+  width: 300px;
+  margin-left: 20px;
+  font-size: 14pt;
+  color: white;
+  background-color: darkgray;
+  border-radius: 12px;
+  border-style: none;
+}
+
+.isValidate:hover {
+  background-color: lightgray;
+  box-shadow: 2px 5px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.googleSignInButton {
+  background-color: #ff934fff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;  
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.googleSignInButton:hover {
+  background-color: #2d76e2;
+}
+
+body.loginPage {
+  background-image: url('../imgs/login.png'); /* Adjust the path as necessary */
+  background-size: cover; /* Cover the entire size of the container */
+  background-repeat: no-repeat;
+  background-position: center;
+}

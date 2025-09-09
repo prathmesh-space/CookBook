@@ -1,0 +1,132 @@
+:root {
+  --maize: #ffb35d;
+  --light-yellow: #fddabc;
+  --yellow: #ffe75dff;
+  --yello-lighter: #fdf3bc;
+  --atomic-tangerine-darker: #cb6728;
+  --atomic-tangerine-2: #b9622b;
+  --atomic-tangerine-2-darker: #914d23;
+  --cerise: #d24970ff;
+  --light-pink: #e387a1;
+  --light-pink-darker: #d26483;
+  --pink: #7e3c4e;
+  --pink-lighter: #d35e7d;
+  --paynes-gray: #32657cff;
+  --air-superiority-blue: #669bb7ff;
+  --air-superiority-blue-lighter: #a9c6d6;
+  --air-superiority-blue-lighter-whiter: #d8ebf5;
+  --air-superiority-blue-lighter-lighter: #9bcae3;
+  --air-superiority-blue-darker: #375463;
+  --air-superiority-blue-darker-darker: #2d4855;
+  --orange-grey: #80726a;
+  --orange-grey-darker: #65574f;
+  --white: #f0f9f9;
+  --white-darker: #898989;
+  --gray: #e1e1e1;
+}
+
+.vert-column-container {
+  display: grid !important;
+  grid-template-columns: 0.95fr 1.05fr 1fr !important; /* Two columns of equal width */
+  gap: 20px !important; /* Gap between grid items */
+  color: var(--air-superiority-blue-darker-darker) !important;
+}
+
+.vert-column-container button {
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  border: 0.1rem solid var(--air-superiority-blue-darker-darker);
+  transition: border 0.5s;
+}
+
+.vert-column-container button:hover {
+  border: 0.1rem solid transparent;
+}
+
+#column-one {
+  grid-area: 1 / 1 / 2 / 2 !important; /* Place div one in the first row, first column */
+  display: block;
+  flex-direction: row;
+}
+
+#column-one h3 {
+  font-weight: 600;
+  width: 80%;
+}
+
+#column-two {
+  grid-area: 1 / 2 / 2 / 3 !important; /* Place div two in the first row, second column */
+  background-color: var(--air-superiority-blue);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  color: var(--white);
+  border: 0.4rem outset var(--air-superiority-blue);
+}
+
+#column-two h3 {
+  font-weight: 600;
+}
+
+#column-three {
+  /* grid-area: 2 / 1 / 3 / 3 !important; Place div three in the second row, spanning both columns */
+  display: flex;
+  flex-direction: row;
+}
+
+#inside-column-three {
+  display: block;
+  flex-direction: column;
+  /* align-content:space-between !important; */
+  justify-content: space-between !important;
+}
+#column-three h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  width: 30rem;
+}
+
+.explainations {
+  padding-left: 1rem;
+  width: 100%;
+  background-color: var(--air-superiority-blue);
+  border-radius: 1rem;
+  padding: 0.5rem;
+  color: var(--white);
+  border: 0.4rem outset var(--air-superiority-blue);
+}
+
+
+.explainations p {
+ text-align: center;
+}
+
+
+.nutrition-modal-content {
+  height: 35rem;
+}
+
+.recharts-wrapper {
+  position: relative;
+  cursor: default;
+  width: 30rem !important;
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+.nutrition-modal-content button {
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  border: 0.1rem solid var(--air-superiority-blue-darker-darker);
+  transition: border 0.5s;
+}
+.nutrition-modal-content button:hover {
+  border: 0.1rem solid transparent;
+}
+
+.field-row input {
+  max-width: 7rem;
+}
+
+.field-row {
+  text-align: left;
+}

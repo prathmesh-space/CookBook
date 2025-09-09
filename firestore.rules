@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Each user has a document under /Users/{userId}
+    match /Users/{userId} {
+      // A user can only read/write their own profile
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Subcollections inside a User (Cart, SavedRecipes, MealPlans, Orders)
+      match /{subCollection}/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Public Recipes Collection (optional — if you want to share recipes across users)
+    match /Recipes/{recipeId} {
+      allow read: if true;                       // anyone can read recipes
+      allow create: if request.auth != null;     // only logged-in users can add
+      allow update, delete: if request.auth != null; 
+    }
+
+    // Default: block everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

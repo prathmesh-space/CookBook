@@ -1,0 +1,40 @@
+.health-page {
+  border-radius: 20px;
+  align-items: center;
+}
+
+#health-header {
+  display: flex;
+  align-items: center;
+  margin-left: 500px;
+  width: 2500px;
+}
+
+.input-form-container {
+  margin: 3px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: content-box;
+  text-align: left;
+}
+
+.macro-goals-display-container {
+  display: block;
+  border: solid 3px;
+  padding: 3%;
+  margin-left: 10px;
+  margin-bottom: 7%;
+  width: 290px;
+  height: 180px;
+  box-sizing: content-box;
+  text-align: left;
+  width: 80%;
+}
+
+.macro-input-container {
+  display: block;
+  width: 100%;
+  border: solid 3px;
+  padding: 2%;
+}

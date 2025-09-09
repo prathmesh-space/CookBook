@@ -1,0 +1,57 @@
+:root {
+  --maize: #ffb35d;
+  --light-yellow: #fddabc;
+  --yellow: #ffe75dff;
+  --yello-lighter: #fdf3bc;
+  --atomic-tangerine-darker: #cb6728;
+  --atomic-tangerine-2: #b9622b;
+  --atomic-tangerine-2-darker: #914d23;
+  --cerise: #d24970ff;
+  --light-pink: #e387a1;
+  --light-pink-darker: #d26483;
+  --pink: #7e3c4e;
+  --pink-lighter: #d35e7d;
+  --paynes-gray: #32657cff;
+  --air-superiority-blue: #669bb7ff;
+  --air-superiority-blue-lighter: #a9c6d6;
+  --air-superiority-blue-lighter-whiter: #d8ebf5;
+  --air-superiority-blue-lighter-lighter: #9bcae3;
+  --air-superiority-blue-darker: #375463;
+  --air-superiority-blue-darker-darker: #2d4855;
+  --orange-grey: #80726a;
+  --orange-grey-darker: #65574f;
+  --white: #F0F9F9;
+  --white-darker: #898989;
+  --gray: #e1e1e1;
+}
+
+
+#modal-goals-column {
+  width: 25%;
+  text-align: left;
+  display: inline-block;
+}
+
+#modal-recipetotals-column {
+  width: 25%;
+  text-align: center;
+  display: inline-block;
+}
+
+#modal-visual-column {
+  width: 40%;
+  text-align: center;
+  display: inline-block;
+}
+
+#nutrition-modal {
+  background-color: var(--air-superiority-blue-lighter-whiter) !important;
+  color: var(--air-superiority-blue-darker) !important;
+  width: 30% !important;
+  transform: translate(7rem, 2rem);
+  height: 41rem !important;
+}
+
+.close-button-nutrition {
+  margin-bottom: 1rem;
+}

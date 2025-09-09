@@ -1,0 +1,28 @@
+mutation CreatePublicList($name: String!, $description: String!) @auth(level: PUBLIC) {
+  list_insert(data: {
+    name: $name,
+    description: $description,
+    isPublic: true
+  })
+}
+
+query GetMyLists @auth(level: USER) {
+  lists(where: {userId: {eq_expr: "auth.uid"}}) {
+    id
+    name
+    description
+    isPublic
+  }
+}
+
+mutation AddMovieToList($listId: UUID!, $movieId: UUID!, $position: Int!) @auth(level: USER) {
+  listMovie_insert(data: {
+    listId: $listId,
+    movieId: $movieId,
+    position: $position
+  })
+}
+
+mutation DeleteMyReview($id: UUID!) @auth(level: USER) {
+  review_delete(key: {id: $id})
+}
