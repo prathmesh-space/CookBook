@@ -1,4 +1,7 @@
 import { GoalForm } from "../customObjects/GoalForm";
+import { Recipe } from "../customObjects/Recipe";
+import { Plan } from "../customObjects/Plan";
+
 
 class FirebaseConverter {
   constructor() {
