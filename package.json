@@ -6,6 +6,7 @@
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "@google/generative-ai": "^0.24.1",
     "@sendgrid/mail": "^8.1.5",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -17,6 +18,9 @@
     "date-fns": "^4.1.0",
     "dompurify": "^3.2.6",
     "firebase": "^10.12.5",
+    "framer-motion": "^12.23.12",
+    "is-inside-container": "^1.0.0",
+    "is-wsl": "^3.1.0",
     "openai": "^5.19.1",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
@@ -57,5 +61,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "fusion-cli": "^2.39.1"
   }
 }

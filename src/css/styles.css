@@ -1,37 +1,46 @@
-@import url("//fonts.googleapis.com/css2?family=Quicksand");
-
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 :root {
-  --maize: #ffb35d;
-  --light-yellow: #fddabc;
-  --yellow: #ffe75dff;
-  --yello-lighter: #fdf3bc;
-  --atomic-tangerine: #ff934fff;
-  --atomic-tangerine-red: #ff694f;
-  --atomic-tangerine-red-darker: #ca4028;
-  --atomic-tangerine-very-light: #f2e3d5;
-  --atomic-tangerine-darker: #cb6728;
-  --atomic-tangerine-2: #b9622b;
-  --atomic-tangerine-2-darker: #914d23;
-  --cerise: #d24970ff;
-  --light-pink: #e387a1;
-  --light-pink-darker: #d26483;
-  --pink: #7e3c4e;
-  --pink-lighter: #d35e7d;
-  --paynes-gray: #32657cff;
-  --air-superiority-blue: #669bb7ff;
-  --air-superiority-blue-lighter: #a9c6d6;
-  --air-superiority-blue-lighter-lighter: #9bcae3;
-  --air-superiority-blue-darker: #375463;
-  --air-superiority-blue-darker-darker: #2d4855;
-  --orange-grey: #80726a;
-  --orange-grey-darker: #65574f;
-  --white: #f0f9f9;
-  --white-darker: #898989;
+  --maize: #e6c766; /* warm ochre */
+  --light-yellow: #f2deb3; /* soft beige */
+  --yellow: #d9a441; /* muted golden yellow */
+  --yello-lighter: #f4efe6; /* warm cream */
+  
+  --atomic-tangerine: #c96a4c; /* terracotta */
+  --atomic-tangerine-red: #b84f2e; /* clay red */
+  --atomic-tangerine-red-darker: #8b3e2f; /* dark rust */
+  --atomic-tangerine-very-light: #e2a489; /* peachy clay */
+  --atomic-tangerine-darker: #9b4c36; /* burnt terracotta */
+  --atomic-tangerine-2: #7b3f2a; /* earthy brownish red */
+  --atomic-tangerine-2-darker: #5a2c1e; /* deep clay */
+  
+  --cerise: #924d36; /* earthy rose */
+  --light-pink: #d07c6c; /* muted warm rose */
+  --light-pink-darker: #a55a4a; /* deep rose clay */
+  --pink: #7b4a3a; /* earthy mauve-brown */
+  --pink-lighter: #e2a48f; /* pale rose clay */
+  
+  --paynes-gray: #5a5245; /* earthy charcoal */
+  --air-superiority-blue: #7d7461; /* stone gray-green */
+  --air-superiority-blue-lighter: #b2a998; /* sage beige */
+  --air-superiority-blue-lighter-lighter: #d4c9b8; /* soft cream stone */
+  --air-superiority-blue-darker: #4e463b; /* dark stone */
+  --air-superiority-blue-darker-darker: #3b352c; /* almost black stone */
+  
+  --orange-grey: #9c7c6f; /* muted warm brown */
+  --orange-grey-darker: #6d4c41; /* dark earthy brown */
+  
+  --white: #faf7f2; /* warm off-white */
+  --white-darker: #c2b8a3; /* earthy light taupe */
+  
   overflow-y: hidden;
 }
 
-* {
-  font-family: Quicksand;
+
+
+.jersey-10-regular {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 #root {
@@ -828,4 +837,54 @@
 
 .mobile-container {
   height: 100vh;
+}
+
+/* Login page header overrides (scoped) */
+body.loginPage .header {
+  display: none !important;
+  background-color: rgba(4, 91, 193, 1);
+  background-image: url('https://cdn.builder.io/api/v1/image/assets%2F2450d8fcb47b4af49f372399cfe338ac%2F0add938ec3fb40af9393a3e2cd6e5269');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  color: rgba(255, 160, 0, 1);
+  min-height: 38px;
+  max-height: 38px;
+  padding: 0 1% 1%;
+  border: none;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  letter-spacing: 5px;
+  font-family: 'Rufina', serif;
+  font-weight: 400;
+  font-size: 23px;
+  line-height: 34.5px;
+}
+
+body.loginPage #header-logo {
+  color: rgba(255, 160, 0, 1);
+  font-family: 'Rufina', serif;
+  font-size: 23px;
+  line-height: 23px;
+  transition: none;
+}
+
+body.loginPage #header-logo:hover {
+  font-size: 23px;
+}
+
+body.loginPage #chef {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  body.loginPage .header {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body.loginPage .header {
+    display: none !important;
+  }
 }

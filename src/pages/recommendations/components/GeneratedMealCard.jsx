@@ -10,45 +10,62 @@ import {
   ModalBody,
 } from "reactstrap";
 import RecipeDetails from "../../../components/RecipeDetails.jsx";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import FirestoreService from "../../../firebase/FirebaseService";
 import { useAuth } from "../../../utils/AuthContext.js";
+
+// Setup Gemini client
+const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
+
+// Use Imagen 3.0 model for images
+const imageModel = genAI.getGenerativeModel({ model: "imagen-3.0" });
 
 const GeneratedMealCard = ({ recipe }) => {
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [imageURL, setImageURL] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
-  const [isSaved, setIsSaved] = useState(recipe.isSaved || false); // Add this line
-  const [isDalleImageGenerated, setIsDalleImageGenerated] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(recipe.isSaved || false);
+  const [isImageGenerating, setIsImageGenerating] = useState(false);
   const { user } = useAuth();
-  const toggleModal = () => setIsModalOpen(!isModalOpen); // Toggle modal
 
-  const buttonOptions = ({ isClicked, cartClick, saveData }) => (
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const buttonOptions = () => (
     <Button color="secondary" onClick={() => setSelectedMeal(null)}>
       Close
     </Button>
   );
 
-  const generateDalleImage = async () => {
+  // ✅ Generate Gemini Image properly
+  const generateGeminiImage = async () => {
     try {
-      setIsDalleImageGenerated(true);
-      const openai = new OpenAI({
-        apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true,
-      });
-      const response = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: `Please generate a picture of ${recipe.name} that is a ${recipe.summary} in photorealistic style`,
-        n: 1,
+      setIsImageGenerating(true);
+
+      const prompt = `Generate a photorealistic food image of "${recipe.name}". It should represent: ${recipe.summary}.`;
+
+      const result = await imageModel.generateImages({
+        prompt,
         size: "1024x1024",
       });
-      setImageURL(response.data[0].url);
-      console.log("Image generated successfully:", response.data[0].url);
+
+      if (!result.images?.length || !result.images[0].b64_json) {
+        throw new Error("No image data returned from Gemini.");
+      }
+
+      const imageBase64 = result.images[0].b64_json;
+      const imgUrl = `data:image/png;base64,${imageBase64}`;
+      setImageURL(imgUrl);
+
+      console.log("✅ Gemini image generated successfully");
     } catch (error) {
-      console.error("Error generating image:", error);
+      console.error("❌ Error generating Gemini image:", error);
+      alert("Failed to generate image. Please try again.");
+    } finally {
+      setIsImageGenerating(false);
     }
   };
 
+  // ✅ Save GPT Response to Firestore
   const saveGPTResponse = async () => {
     if (!user || !user.uid) {
       console.error("User not authenticated.");
@@ -63,24 +80,25 @@ const GeneratedMealCard = ({ recipe }) => {
     try {
       const collectionPath = `Users/${user.uid}/generatedRecipes`;
 
-      // Create a new object with isSaved set to true and add IDs to ingredients
       const savedRecipe = {
         ...recipe,
         isSaved: true,
-        ingredients: recipe.ingredients.map((ingredient, index) => ({
+        ingredients: recipe.ingredients.map((ingredient) => ({
           ...ingredient,
           id: `i-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         })),
       };
+
       await FirestoreService.createDocument(
         collectionPath,
         savedRecipe.id,
-        savedRecipe,
-        "gptResponse"
+        savedRecipe
       );
-      setIsSaved(true); // Update the local state to reflect that the recipe is saved
+
+      setIsSaved(true);
+      console.log("✅ Recipe saved successfully");
     } catch (error) {
-      console.error("Error saving GPT response:", error);
+      console.error("❌ Error saving GPT response:", error);
     }
   };
 
@@ -103,16 +121,22 @@ const GeneratedMealCard = ({ recipe }) => {
               src={imageURL}
               alt="Generated Recipe Image"
               onClick={toggleModal}
+              style={{ cursor: "pointer" }}
             />
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
               <ModalHeader toggle={toggleModal}>{recipe.name}</ModalHeader>
               <ModalBody>
-                <img src={imageURL} width="100%" alt="Full-size Recipe Image" />
+                <img
+                  src={imageURL}
+                  width="100%"
+                  alt="Full-size Recipe Image"
+                />
               </ModalBody>
             </Modal>
           </>
         )}
       </div>
+
       <CardBody>
         <Button
           className="meal-card-button details"
@@ -120,6 +144,7 @@ const GeneratedMealCard = ({ recipe }) => {
         >
           Details
         </Button>
+
         <Button
           className="meal-card-button save"
           color="success"
@@ -128,15 +153,18 @@ const GeneratedMealCard = ({ recipe }) => {
         >
           {isSaved ? "Saved" : "Save"}
         </Button>
+
         <Button
           className="meal-card-button dalle"
           color="info"
-          onClick={generateDalleImage}
-          disabled={isDalleImageGenerated} // Disable the button if image is generated
+          onClick={generateGeminiImage}
+          disabled={isImageGenerating}
         >
-          {isDalleImageGenerated ? "Image Generated" : "Generate DALL-E Image"}
+          {isImageGenerating ? "Generating..." : "Generate Gemini Image"}
         </Button>
+
         <div className="meal-card-reasoning">{recipe.inspirationReasoning}</div>
+
         {selectedMeal && (
           <RecipeDetails
             meal={selectedMeal}

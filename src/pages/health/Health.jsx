@@ -14,24 +14,18 @@ import {
   PieChart,
   Pie,
   Tooltip,
-  Cell,
 } from "recharts";
 import "./health.css";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
-const Health = ({ recipes, selectedDates }) => {
-  // Firebase auth
+const Health = ({ recipes = [], selectedDates = 1 }) => {
   const { user } = useAuth();
-  // Firestore listener
   const firestoreListener = new FirestoreListener();
-  // Meal data manager for accessing Spoonacular
   const mealDataManager = new MealDataManager();
-  // Toggle for prompting user for goals or displaying them
+
   const [showGoals, setShowGoals] = useState(true);
-  // Controls visibility/clickability for button
   const [buttonClicked, setButtonClicked] = useState(false);
-  // Intially set total macros
   const [totalMacros, setTotalMacros] = useState({
     calories: 0,
     carbohydrates: 0,
@@ -39,85 +33,78 @@ const Health = ({ recipes, selectedDates }) => {
     sugar: 0,
     fat: 0,
   });
-  // Used for setting nutrition data
   const [recipeNutritionData, setRecipeNutritionData] = useState([]);
-  // Used for pie chart breakdown
   const [macroBreakdownData, setMacroBreakdownData] = useState([
     { name: "Carbohydrates", value: 0, fill: "#FFA500" },
     { name: "Protein", value: 0, fill: "#006400" },
     { name: "Sugar", value: 0, fill: "#FF0000" },
     { name: "Fat", value: 0, fill: "#00008B" },
   ]);
-
-  // Tracks users goal for bar graph
   const [userGoals, setUserGoals] = useState({
     calories: 0,
-    carbohydrates: 0,
+    carbs: 0,
     protein: 0,
     sugar: 0,
     fat: 0,
   });
 
-  // Used for updating the bar graph
+  // Progress data for bar chart
   const progressData = [
     {
       name: "Calories",
       Goals: userGoals.calories * selectedDates,
       Planned: totalMacros.calories,
-      amt: userGoals.calories,
     },
     {
       name: "Carbs",
       Goals: userGoals.carbs * selectedDates,
       Planned: totalMacros.carbohydrates,
-      Completion: (totalMacros.carbohydrates / userGoals.carbs) * 100,
     },
     {
       name: "Protein",
       Goals: userGoals.protein * selectedDates,
       Planned: totalMacros.protein,
-      Completion: (totalMacros.protein / userGoals.protein) * 100,
     },
     {
       name: "Sugar",
       Goals: userGoals.sugar * selectedDates,
       Planned: totalMacros.sugar,
-      Completion: (totalMacros.sugar / userGoals.sugar) * 100,
     },
     {
       name: "Fat",
       Goals: userGoals.fat * selectedDates,
       Planned: totalMacros.fat,
-      Completion: (totalMacros.fat / userGoals.fat) * 100,
     },
   ];
 
-  // Listener for tracking macro goals changes
+  // Listen to health goals from Firestore
   useEffect(() => {
-    if (user) {
-      const path = `Users/${user.uid}/Health/${user.uid}.HealthGoals`;
-      const callback = (snapshot) => {
-        if (snapshot.exists()) {
-          setUserGoals(snapshot.data());
-          setShowGoals(true);
-        } else {
-          setShowGoals(false);
-        }
-      };
+    if (!user) return;
 
-      firestoreListener.subscribeToDocument(path, callback);
+    const path = `Users/${user.uid}/Health/${user.uid}.HealthGoals`;
+    const callback = (snapshot) => {
+      if (snapshot.exists()) {
+        setUserGoals(snapshot.data());
+        setShowGoals(true);
+      } else {
+        setShowGoals(false);
+      }
+    };
 
-      return () => {
-        firestoreListener.unsubscribe();
-      };
-    }
-  }, []);
+    firestoreListener.subscribeToDocument(path, callback);
+    return () => firestoreListener.unsubscribe();
+  }, [user]);
 
-  // Controls the functionality of the results button
+  // ✅ Fixed fetchAllRecipeDetails
   const fetchAllRecipeDetails = async () => {
-    try {
-      setButtonClicked(true);
+    if (!recipes || recipes.length === 0) {
+      console.warn("No recipes provided!");
+      return;
+    }
 
+    setButtonClicked(true);
+
+    try {
       let newTotalMacros = {
         calories: 0,
         carbohydrates: 0,
@@ -125,38 +112,44 @@ const Health = ({ recipes, selectedDates }) => {
         sugar: 0,
         fat: 0,
       };
-
       let newRecipeNutritionData = [];
 
       for (const recipe of recipes) {
-        const recipeDetails = await mealDataManager.fetchRecipeDetails(
-          recipe.id
-        );
+        if (!recipe.id) continue;
+
+        const recipeDetails = await mealDataManager.fetchRecipeDetails(recipe.id);
+        console.log("Fetched recipe:", recipe.name, recipeDetails);
+
+        if (!recipeDetails) continue;
+
         newTotalMacros = {
-          calories: newTotalMacros.calories + recipeDetails.calories,
+          calories: newTotalMacros.calories + (recipeDetails.calories || 0),
           carbohydrates:
-            newTotalMacros.carbohydrates + recipeDetails.carbohydrates,
-          protein: newTotalMacros.protein + recipeDetails.protein,
-          sugar: newTotalMacros.sugar + recipeDetails.sugar,
-          fat: newTotalMacros.fat + recipeDetails.fat,
+            newTotalMacros.carbohydrates + (recipeDetails.carbohydrates || 0),
+          protein: newTotalMacros.protein + (recipeDetails.protein || 0),
+          sugar: newTotalMacros.sugar + (recipeDetails.sugar || 0),
+          fat: newTotalMacros.fat + (recipeDetails.fat || 0),
         };
+
         newRecipeNutritionData.push({
           name: recipe.name,
           ...recipeDetails,
         });
       }
 
-      // Update total macros and pie chart data after calculating total macros
       setTotalMacros(newTotalMacros);
-      setMacroBreakdownData((prevData) =>
-        prevData.map((item) => ({
-          ...item,
-          value: newTotalMacros[item.name.toLowerCase()],
-        }))
-      );
       setRecipeNutritionData(newRecipeNutritionData);
+
+      setMacroBreakdownData([
+        { name: "Carbohydrates", value: newTotalMacros.carbohydrates, fill: "#FFA500" },
+        { name: "Protein", value: newTotalMacros.protein, fill: "#006400" },
+        { name: "Sugar", value: newTotalMacros.sugar, fill: "#FF0000" },
+        { name: "Fat", value: newTotalMacros.fat, fill: "#00008B" },
+      ]);
     } catch (error) {
       console.error("Error fetching recipe details:", error);
+    } finally {
+      setButtonClicked(false); // Re-enable button
     }
   };
 
@@ -167,63 +160,40 @@ const Health = ({ recipes, selectedDates }) => {
           <h2>Tips for filling in Macros</h2>
           <h6>Hover over each category for more information</h6>
           <p>
-            <Tippy
-              content="To maintain weight, aim for your daily
-            energy expenditure. For weight loss, aim for a deficit of 500
-            calories per day."
-            >
+            <Tippy content="To maintain weight, aim for your daily energy expenditure. For weight loss, aim for a deficit of 500 calories per day.">
               <strong>CALORIES</strong>
             </Tippy>
           </p>
           <p>
-            <Tippy
-              content="To build muscle, aim for 1 gram per
-              pound of body weight. For general health, aim for 0.36 grams per
-              pound."
-            >
+            <Tippy content="To build muscle, aim for 1 gram per pound of body weight. For general health, aim for 0.36 grams per pound.">
               <strong>PROTEIN</strong>
             </Tippy>
           </p>
           <p>
-            <Tippy
-              content="For an active lifestyle, aim for
-              3-5 grams per kilogram of body weight. For weight loss, aim for
-              the lower end of this range."
-            >
+            <Tippy content="For an active lifestyle, aim for 3-5 grams per kilogram of body weight. For weight loss, aim for the lower end of this range.">
               <strong>CARBOHYDRATES</strong>
             </Tippy>
           </p>
           <p>
-            <Tippy
-              content="For general health, aim for 20-35% of your
-              total daily calories. For a ketogenic diet, aim for 70-75% of your
-              total daily calories."
-            >
+            <Tippy content="For general health, aim for 20-35% of your total daily calories. For a ketogenic diet, aim for 70-75% of your total daily calories.">
               <strong>FAT</strong>
             </Tippy>
           </p>
           <p>
-            <Tippy
-              content="For a healthy diet, aim for less than 10%
-              of your total daily calories from added sugars. For optimal
-              health, aim for less than 5%."
-            >
+            <Tippy content="For a healthy diet, aim for less than 10% of your total daily calories from added sugars. For optimal health, aim for less than 5%.">
               <strong>SUGAR</strong>
             </Tippy>
           </p>
         </div>
         <br />
-        <br />
-        <br />
-        {/* Either display goals or prompt user to enter them */}
         {showGoals ? (
           <DisplayGoals onEdit={() => setShowGoals(false)} />
         ) : (
           <MacroGoalForm onSubmit={() => setShowGoals(true)} />
         )}
       </div>
+
       <div id="column-two">
-        {/* Display total macros */}
         <div>
           <h3>Total Macros from selected days:</h3>
           <p>Calories: {totalMacros.calories} cals</p>
@@ -234,38 +204,26 @@ const Health = ({ recipes, selectedDates }) => {
         </div>
         <div>
           <h3>Recipes for selected range: </h3>
-          <br />
           <ul>
             {recipeNutritionData.map((recipe, index) => (
               <li key={index}>
-                <b>{recipe.name}</b> - Calories: {recipe.calories} cals, Carbs:{" "}
-                {recipe.carbohydrates} g, Protein: {recipe.protein} g, Sugar:{" "}
-                {recipe.sugar} g, Fat: {recipe.fat} g
+                <b>{recipe.name}</b> - Calories: {recipe.calories} cals, Carbs: {recipe.carbohydrates} g, Protein: {recipe.protein} g, Sugar: {recipe.sugar} g, Fat: {recipe.fat} g
               </li>
             ))}
           </ul>
         </div>
         <div>
           <button onClick={fetchAllRecipeDetails} disabled={buttonClicked}>
-            Show Results
+            {buttonClicked ? "Loading..." : "Show Results"}
           </button>
         </div>
-        <p>
-          <strong>
-            *Note: If no results are displayed after the button is pressed, you
-            may have to wait a few seconds.
-          </strong>
-        </p>
       </div>
-      {/* Conditionally render Charts if user has selected a meal */}
+
       <div id="column-three">
         {totalMacros.calories > 0 && (
           <div id="inside-column-three">
             <div>
-              <h1>
-                Your macronutrient breakdown for the selected days (grams)
-              </h1>
-              <p>Hover over sections of the graph for more details.</p>
+              <h1>Macronutrient Breakdown</h1>
               <PieChart width={500} height={300}>
                 <Pie
                   dataKey="value"
@@ -280,25 +238,10 @@ const Health = ({ recipes, selectedDates }) => {
                 />
                 <Tooltip />
               </PieChart>
-              <br />
-              <br />
-              <br />
             </div>
             <div>
-              <h1>Progress - How do my planned meals line up with my goals?</h1>
-              <p>Hover over sections of the graph for more details.</p>
-              <br />
-              <BarChart
-                width={500}
-                height={300}
-                data={progressData}
-                margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
+              <h1>Progress vs Goals</h1>
+              <BarChart width={500} height={300} data={progressData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />

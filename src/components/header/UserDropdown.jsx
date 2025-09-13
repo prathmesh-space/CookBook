@@ -14,9 +14,6 @@ function UserDropdown() {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item as={Link} to="/order-history">
-          Order History
-        </Dropdown.Item>
         <Dropdown.Item onClick={logoutUser}>Logout</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

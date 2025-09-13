@@ -1,7 +1,20 @@
+import React from "react";
+import bgImage from "../assets/cookbook-bg.png";
+
 const Home = () => {
   return (
-    <div>
-      <h1 className="home-heading">Welcome to CookBook Pro</h1>
+    <div
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+      }}
+    >
+            <h1 className="home-heading">Welcome to CookBook</h1>
+
       <div className="grid-container-home">
         <div className="grid-item-home">
           <a className="h2Style" href="/search">
@@ -11,8 +24,7 @@ const Home = () => {
             Discover new, mouthwatering recipes from our extensive collection of
             thousands of savory dishes.
             <br></br>
-            Explore recipe details, add favorites to your collection, or easily
-            add ingredients to your cart.
+            Explore recipe details.
             <br></br>
             Simply type in your cravings and let the culinary adventure begin!
           </p>
@@ -65,6 +77,7 @@ const Home = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

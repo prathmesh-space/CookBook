@@ -10,7 +10,6 @@ import Header from "./components/header/Header";
 
 import Recomendations from "./pages/recommendations/Recommendations";
 import CreateRecipes from "./pages/create-recipe/CreateRecipes";
-import OrderHistory from "./pages/order-history/OrderHistory";
 import MainLayout from "./pages/MainLayout";
 import MobileLayout from "./pages/MobileLayout";
 import PrivateRoutes from "./utils/PrivateRoutes";
@@ -78,14 +77,7 @@ function App() {
                     </Layout>
                   }
                 />
-                <Route
-                  path="/order-history"
-                  element={
-                    <Layout>
-                      <OrderHistory />
-                    </Layout>
-                  }
-                />
+                
                 <Route
                   path="/calendar"
                   element={
@@ -95,16 +87,6 @@ function App() {
                   }
                 />
               </>
-            )}
-            {isMobile && (
-              <Route
-                path="/order-history"
-                element={
-                  <Layout>
-                    <OrderHistory />
-                  </Layout>
-                }
-              />
             )}
           </Route>
         </Routes>

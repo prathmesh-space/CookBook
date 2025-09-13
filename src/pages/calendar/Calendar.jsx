@@ -11,7 +11,6 @@ import FirestoreListener from "../../firebase/FirestoreListener.js";
 import { useAuth } from "../../utils/AuthContext.js";
 import NutritionModal from "./components/NutritionModal.jsx";
 import RecipeDetails from "../../components/RecipeDetails.jsx";
-import Cart from "../../components/cart/Cart.jsx";
 
 const MyCalendar = () => {
   //firebase auth
@@ -314,25 +313,7 @@ const MyCalendar = () => {
           <button className="lg-cal-btn" onClick={openModal}>
             Add Meal
           </button>
-          {
-            //only renders the order meals button if there are meals to order
-            (selectedDates.length > 0 ? selectedDates : [selectedDay]).some(
-              (date) =>
-                plans.some(
-                  (plan) =>
-                    plan.date === date.toISOString().split("T")[0] &&
-                    plan.meals.length > 0
-                )
-            ) ? (
-              <button className="lg-cal-btn order" onClick={orderMeals}>
-                Order Meals
-              </button>
-            ) : !showWelcome ? (
-              <button className="lg-cal-btn" onClick={() => setShowWelcome(true)}>?</button>
-            ) : (
-              <button className="lg-cal-btn" onClick={() => setShowWelcome(false)}>X</button>
-            )
-          }
+          
           {
             showWelcome &&
             !(selectedDates.length > 0 ? selectedDates : [selectedDay]).some(

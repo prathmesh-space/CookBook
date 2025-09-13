@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext.js";
-import { FaShoppingCart } from "react-icons/fa";
-import Cart from "../cart/Cart.jsx";
 import FirestoreListener from "../../firebase/FirestoreListener.js";
 import "../../css/styles.css";
 import UserDropdown from "./UserDropdown.jsx";
-import chef from './chef.svg'; // Import the chef.svg file
-
 
 const Header = () => {
   const { user } = useAuth();
@@ -37,9 +33,7 @@ const Header = () => {
   return (
     <div id="header" className="header">
       <div>
-        <Link id="header-logo" to="/">
-          <img src={chef} id="chef" alt="CookBook-Pro Logo" /> CookBook-Pro
-        </Link>
+         CookBook
       </div>
       <div className="links--wrapper">
         {user ? (
@@ -59,14 +53,7 @@ const Header = () => {
             <Link to="/calendar" className="header--link">
               Calendar
             </Link>
-            <button className="cart-button" onClick={() => setModalOpen(true)}>
-              <FaShoppingCart /> Cart ({cartItems.length})
-            </button>
-            <Cart
-              modalOpen={modalOpen}
-              setModalOpen={setModalOpen}
-              cartItems={cartItems}
-            />
+            
             <UserDropdown />
           </>
         ) : null}

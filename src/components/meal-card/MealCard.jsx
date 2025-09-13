@@ -4,24 +4,18 @@ import {
   Card,
   CardBody,
   CardImg,
-  CardText,
   CardTitle,
 } from "reactstrap";
 import RecipeDetails from "../RecipeDetails.jsx";
 import FirestoreService from "../../firebase/FirebaseService.js";
 import { useAuth } from "../../utils/AuthContext.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBox,
-  faCartShopping,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const MealCard = ({ meal }) => {
-  //selected meal is initally set to null
+  //selected meal is initially set to null
   const [selectedMeal, setSelectedMeal] = useState(null);
   const { user } = useAuth();
-  const [isClicked, setIsClicked] = useState(false);
   const [isSavedClicked, setIsSavedClicked] = useState(false);
 
   async function saveData(collectionPath, documentId, data, dataType) {
@@ -45,16 +39,11 @@ const MealCard = ({ meal }) => {
     }
   }
 
-  const cartClick = () => {
-    setIsClicked(true);
-  };
-
   const savedClick = () => {
     setIsSavedClicked(true);
   };
 
   const width = { width: "18rem" };
-  const height = { wh: "18rem" };
 
   const cardStyle = {
     border: "2px outset #FFA6A6",
@@ -62,8 +51,8 @@ const MealCard = ({ meal }) => {
 
   const minWidth = { minWidth: "20rem" };
 
-  // //button options for RecipeDetails
-  const buttonOptions = ({ isClicked, cartClick, saveData }) => (
+  //button options for RecipeDetails
+  const buttonOptions = ({ saveData }) => (
     <>
       {user && (
         <Button
@@ -82,27 +71,6 @@ const MealCard = ({ meal }) => {
           Save Recipe
         </Button>
       )}
-      <Button
-        className={`primary-color card-button ${isClicked ? "clicked" : ""}`}
-        onClick={() => {
-          cartClick();
-          saveData(
-            `Users/${user.uid}/Cart/`,
-            String(selectedMeal.id),
-            selectedMeal,
-            "recipe"
-          );
-        }}
-        style={{ width: "7rem" }}
-        disabled={isClicked}
-      >
-        <div>
-          <span className="add-to-cart">Add to Cart</span>
-          <span className="added">Added</span>
-          <FontAwesomeIcon icon={faCartShopping} />
-          <FontAwesomeIcon icon={faBox} />
-        </div>
-      </Button>
       <Button
         className="modal-close-button"
         onClick={() => setSelectedMeal(null)} //setting selected meal = null closes the RecipeDetails component
@@ -134,66 +102,36 @@ const MealCard = ({ meal }) => {
         >
           Details
         </Button>
-        {
-          selectedMeal && (
-            <RecipeDetails
-              meal={selectedMeal}
-              buttonOptions={() =>
-                buttonOptions({ isClicked, cartClick, saveData })
-              }
-              isOpen={selectedMeal !== null}
-            />
-          ) /* if selectedMeal is not null, render the RecipeDetails component */
-        }
+        {selectedMeal && (
+          <RecipeDetails
+            meal={selectedMeal}
+            buttonOptions={() => buttonOptions({ saveData })}
+            isOpen={selectedMeal !== null}
+          />
+        )}
         {user && (
-          <>
-            <Button
-              className={`thirdary-color card-button ${
-                isSavedClicked ? "clicked" : ""
-              }`}
-              onClick={() => {
-                savedClick();
-                saveData(
-                  `Users/${user.uid}/SavedRecipes/`,
-                  String(meal.id),
-                  meal,
-                  "recipe"
-                );
-              }}
-              style={{ width: "3.6rem" }}
-              disabled={isSavedClicked}
-            >
-              <div>
-                <span className="add-to-saved">Save</span>
-                <span className="saved">Saved</span>
-                <FontAwesomeIcon icon={faCheck} />
-              </div>
-            </Button>
-
-            <Button
-              className={`primary-color card-button ${
-                isClicked ? "clicked" : ""
-              }`}
-              onClick={() => {
-                cartClick();
-                saveData(
-                  `Users/${user.uid}/Cart/`,
-                  String(meal.id),
-                  meal,
-                  "recipe"
-                );
-              }}
-              style={{ width: "7rem" }}
-              disabled={isClicked}
-            >
-              <div>
-                <span className="add-to-cart">Add to Cart</span>
-                <span className="added">Added</span>
-                <FontAwesomeIcon icon={faCartShopping} id="shopping-cart" />
-                <FontAwesomeIcon icon={faBox} />
-              </div>
-            </Button>
-          </>
+          <Button
+            className={`thirdary-color card-button ${
+              isSavedClicked ? "clicked" : ""
+            }`}
+            onClick={() => {
+              savedClick();
+              saveData(
+                `Users/${user.uid}/SavedRecipes/`,
+                String(meal.id),
+                meal,
+                "recipe"
+              );
+            }}
+            style={{ width: "3.6rem" }}
+            disabled={isSavedClicked}
+          >
+            <div>
+              <span className="add-to-saved">Save</span>
+              <span className="saved">Saved</span>
+              <FontAwesomeIcon icon={faCheck} />
+            </div>
+          </Button>
         )}
       </CardBody>
     </Card>
