@@ -112,9 +112,15 @@ Return ONLY valid JSON in the following structure, with no markdown, no explanat
 }
       `;
 
-      // Call Gemini text model
-      const completion = await textModel.generateContent(prompt);
-      let text = completion.response.text();
+      // Call Django backend
+      const res = await fetch("http://localhost:8000/api/generate-recipe/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      if (!res.ok) throw new Error("Django backend failed");
+      const data = await res.json();
+      let text = data.text;
 
       console.log("Raw Gemini output:", text);
 
